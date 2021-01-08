@@ -11,6 +11,8 @@ import java.io.FileWriter;
 import java.util.Scanner;
 import java.io.File;
 import java.sql.Timestamp;
+import java.io.BufferedWriter;
+import java.io.Writer;
 
 
 public class Spotify {
@@ -22,24 +24,25 @@ public class Spotify {
   // have to change access_token when it expires - https://developer.spotify.com/console/post-playlists/ (do refresh oauth token if you are not lazy)
 
 
-  static String access_token = "BQAeA18NmgVMWll6yO2VMNGQREd1X1a0LadCpXQ60MwBHD_ywPmWKFtNoFtVqAekKKdPVzEartyouaYXah1bl10Yx3NDvgpD3DYvRE7PiKXciYCVXXzmmGSAqfW79xuCv9UMn4hRpmVpu8r30xPlddimJL2aLrOUzCCFJrlz20khwe_gElS2qBcRFS8s70L4EVZY3dTQ8yA-Iec8RCN3u4o0ODbvPFXw";
+  static String access_token = "BQCVRQ2Knz6T456iyoBBR_sqEtn4B06JjUtg9qHDMegr2D2bguu8JzuVl0cj6oH4YC3rieYtgEoUyyHh_F7PkeURRk7rQhlFuxmiVrct5rw7GNOQyUf3hI97NEuEwIQpPbn07nLOgW66C7T5R6VxVi_GtBN44c5qNbv_sfn_gHJWv6hY4r55RJBvnTpHAn8l5-qQ1XopFk7jLIHiFiplFOrhbr36Cfez";
   static String artist;
   static String track;
   static String artist_name;
   static String track_name;
-  // change path accordingly
+  // CHANGE PATH ACCORDINGLY
   // side note: some songs may have to be added manually -> failed.txt contains songs that are unsuccessful 
+  static String music_directory = "D:/Music";
   static String failed = "D:/Music1/failed.txt";
   static String success = "D:/Music1/success.txt";
   static String error = "D:/Music1/error.txt";
+  static String songs_csv = "D:/Music1/songs.csv";
   static Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
   public static void main(String[] args) throws IOException {
     Files.deleteIfExists(Paths.get(failed));
     Files.deleteIfExists(Paths.get(success));
     Files.deleteIfExists(Paths.get(error));
-    // change path accordingly
-    String csvFile = "D:/Music1/Songs.csv";
+    Files.deleteIfExists(Paths.get(songs_csv));
     BufferedReader br = null;
     String line = "";
     String csvSplitBy = ",";
@@ -47,8 +50,31 @@ public class Spotify {
     createFailedStatusFile(failed);
     createSuccessStatusFile(success);
 
+    // read filenames and write to csv file
+    File folder = new File(music_directory);
+    File[] listOfFiles = folder.listFiles();
+
+    for (int i = 0; i < listOfFiles.length; i++) {
+      if (listOfFiles[i].isFile()) {
+        String songsWithExt = listOfFiles[i].getName();
+        String songsWithoutExt = songsWithExt.replaceFirst("[.][^.]+$", "");
+        String[] songs = songsWithoutExt.split("-");
+        String artist = songs[0];
+        String track = songs[1];
+        Writer output;
+        output = new BufferedWriter(new FileWriter(songs_csv,true));
+        output.append(artist);
+        output.append(',');
+        output.append(track);
+        output.append('\n');
+        output.close();
+      }
+    }
+    
+    System.out.println("Successfully wrote songs to CSV file!");
+
     try {
-      br = new BufferedReader(new FileReader(csvFile));
+      br = new BufferedReader(new FileReader(songs_csv));
       while ((line = br.readLine()) != null) {
 
         String[] songs = line.split(csvSplitBy);
@@ -76,7 +102,6 @@ public class Spotify {
     System.out.println("Successfully wrote to the failed.txt");
 
     //// Uncomment the lines below to test if music can be added into your playlist 
-    
     // Scanner sc = new Scanner(System.in);
     // System.out.println("Artist Name:");
     // artist_name = sc.nextLine();
@@ -137,8 +162,8 @@ public class Spotify {
 
   public static void runPOSTCommand(String track_uri) throws IOException {
     Runtime rt = Runtime.getRuntime();
-    // change playlist_uri here - Step 1: in your spotify playlist -> Step 2: click the 3 dots button -> Step 3: share -> Step 4: copy Spotify URI
-    String playlist_uri = "4skeuWnQrwEE44Y9fHfvKF";
+    // CHANGE PLAYLIST_URI HERE - Step 1: in your spotify playlist -> Step 2: click the 3 dots button -> Step 3: share -> Step 4: copy Spotify URI -> e.g. spotify:playlist:68qMm0G75PHI6KQgJRmwqq -> 68qMm0G75PHI6KQgJRmwqq
+    String playlist_uri = "68qMm0G75PHI6KQgJRmwqq";
     String url = "\"" + "https://api.spotify.com/v1/playlists/" + playlist_uri + "/tracks?uris=" + track_uri + "\"";
     String cmdString = "curl -i -X POST " + url + " -H " + "\"" + "Authorization: Bearer " + access_token + "\""
         + " -H " + "\"" + "Accept: application/json" + "\"" + " -d 0";
