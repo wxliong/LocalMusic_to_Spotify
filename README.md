@@ -1,5 +1,5 @@
-# SamsungMusic_to_Spotify
-Purpose: Add songs from Samsung Music to Spotify
+# LocalMusic_to_Spotify
+Purpose: Add songs from Local Music to Spotify
 
 **IMPORTANT NOTE**
 - **read comments from Spotify.java and change accordingly** <br />
