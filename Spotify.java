@@ -24,7 +24,7 @@ public class Spotify {
   // have to change access_token when it expires - https://developer.spotify.com/console/post-playlists/ (do refresh oauth token if you are not lazy)
 
 
-  static String access_token = "BQCVRQ2Knz6T456iyoBBR_sqEtn4B06JjUtg9qHDMegr2D2bguu8JzuVl0cj6oH4YC3rieYtgEoUyyHh_F7PkeURRk7rQhlFuxmiVrct5rw7GNOQyUf3hI97NEuEwIQpPbn07nLOgW66C7T5R6VxVi_GtBN44c5qNbv_sfn_gHJWv6hY4r55RJBvnTpHAn8l5-qQ1XopFk7jLIHiFiplFOrhbr36Cfez";
+  static String access_token = "";
   static String artist;
   static String track;
   static String artist_name;
